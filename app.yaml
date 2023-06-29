@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-crud-deployment
+  namespace: project2
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: springboot-k8s-mysql
+  template:
+    metadata:
+      labels:
+        app: springboot-k8s-mysql
+    spec:
+      containers:
+      - image: dineshbabu12/singam_pillai1:v1
+        name: springboot-crud-k8s
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_HOST
+          value: mysql
+        - name: DB_NAME
+          value: singamlabs
+        - name: DB_USERNAME
+          value: root
+        - name: DB_PASSWORD
+          value: root
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springboot-crud-svc
+  namespace: project2
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: springboot-k8s-mysql
+  type: ClusterIP

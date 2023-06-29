@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: singam-ingress
+  namespace: project2
+  annotations:
+    cert-manager.io/cluster-issuer: cafe-prod ##cluster certificate name we have provided this with ingres comtrlleer with cert-manager addon
+spec:
+  tls:
+  - hosts:
+    - singam.com # 
+    secretName: singam-tls # This name should be diff for diff ingres 
+  ingressClassName: nginx ## ingress class name , must be used for if we use more than 1 ingress 
+
+  rules:
+  - host: singam.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /orders
+        backend:
+          service:
+            name: springboot-crud-svc
+            port:
+              number: 8080
