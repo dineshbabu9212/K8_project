@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  namespace: project1
+  labels:
+    run: test
+  name: test
+spec:
+  containers:
+  - image: dineshbabu12/mrdevops-cmvar:latest
+    name: test
+    envFrom:
+    - configMapRef:
+        name: project1-mysql-db
+    - secretRef:
+        name: mysql-sc
+
+

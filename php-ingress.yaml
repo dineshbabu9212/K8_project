@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: php-ingress
+  namespace: project1
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: dinextech.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: phpadmin-svc
+            port:
+              number: 8099
+      - pathType: Prefix
+        path: /second
+        backend:
+          service:
+            name: second-page
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /third
+        backend:
+          service:
+            name: third-page
+            port:
+              number: 80

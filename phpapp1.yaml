@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: phpapp
+  name: phpapp
+  namespace: project1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phpapp
+  template:
+    metadata:
+      labels:
+        app: phpapp
+    spec:
+      containers:
+      - image: dineshbabu12/mrdevops-cm1:latest
+        name: mrdevops-cm1
+        volumeMounts:
+        - name: fromconf
+          mountPath: /var/www/html/index.php
+      volumes:
+      - name: fromconf
+        configMap:
+          name: index.php
