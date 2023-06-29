@@ -1,7 +1,8 @@
+# this is the certifcatae/ssl for the whole cluster will be add-on for the ingress controller 
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: cafe-prod ##issure name for the TLS/SSL 
+  name: cafe-prod ##issure name for the TLS/SSL eg . let-encrypt
 spec:
   acme:
     # Email address used for ACME registration

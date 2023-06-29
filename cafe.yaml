@@ -11,27 +11,25 @@ metadata:
   name: cafe-ingress
   namespace: cafe
   annotations:
-    cert-manager.io/cluster-issuer: cafe-prod
-
+    cert-manager.io/cluster-issuer: cafe-prod # issuer for the certificate , we have created it we used this name for on the prodi=ution_issuer.yaml file 
 spec:
-  ingressClassName: nginx
-
+  ingressClassName: nginx # Ingress class name, if we have more than one ingress we have to mention it which ingress controller need to see this ingress yaml file  
   tls:
   - hosts:
     - cafe.dinextech.com
-    secretName: cafe-tls
+    secretName: cafe-tls # this name should be unique for each and every ingress.yaml we have creating
   rules:
-  - host: cafe.dinextech.com
+  - host: cafe.dinextech.com # my cafe.dinextech.com/tea --> will load the cafe page 
     http:
       paths:
       - pathType: Prefix
         path: /tea
         backend:
           service:
-            name: tea-svc
+            name: tea-svc # tea service name which we created 
             port:
               number: 80
-      - pathType: Prefix
+      - pathType: Prefix # --> prefix means in cafe.dinextech.com/ -- after the / coffee will come after that cofee/
         path: /coffee
         backend:
           service:
