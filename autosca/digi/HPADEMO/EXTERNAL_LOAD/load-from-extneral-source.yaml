@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hpa-external-load
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quote
+  namespace: hpa-external-load
+spec:
+  selector:
+    matchLabels:
+      app: quote
+  template:
+    metadata:
+      labels:
+        app: quote
+    spec:
+      containers:
+      - name: quote
+        image: docker.io/datawire/quote:0.4.1
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "25Mi"
+          limits:
+            memory: "50Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 8080
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: quote-svc
+  namespace: hpa-external-load
+spec:
+  selector:
+    app: quote
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: external-load-test
+  namespace: hpa-external-load
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: quote
+  behavior: ###  tell how long this need to wait for scale down or scale up the 
+    scaleDown: ## here using for scale down it wait for only 60 sec and then scaledown 
+      stabilizationWindowSeconds: 60 ##deafault time is 5 minutes
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 20
+
+## Load for this pod will be commimg from the script http-load-generator.sh using while loop for everu 0..001 sec http request is sending the quote-svc servivce to generate load  ###
